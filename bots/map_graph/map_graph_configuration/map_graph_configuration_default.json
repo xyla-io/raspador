@@ -1,0 +1,7 @@
+{
+  "map_context_urls": [
+    "bots/map_graph/map_graph_configuration/graphs/map_graph_demo.json"
+  ],
+  "entry_key": "start",
+  "base_url": "./bots/map_graph/html/main.html"
+}

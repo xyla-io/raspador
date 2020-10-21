@@ -1,0 +1,1 @@
+from .raspador_template_scraper import RaspadorTemplateBot as Bot

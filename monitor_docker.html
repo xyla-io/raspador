@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <title>Raspador Monitor</title>
+    <style>
+      html {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        background-color: rgb(0.1, 0.1, 0.1);
+        color: white;
+      }
+      img {
+        width: 1024px;
+        height: 768px;
+      }
+      div#control {
+        margin: 24px;
+      }
+      a {
+        color: white;
+        text-decoration: none;
+      }
+      iframe {
+        width: 1024px;
+        height: 768px;
+        background-color: white;
+      }
+    </style>
+    <script>
+      var raspador = {
+        playing: true,
+      };
+      function togglePlay() {
+        raspador.playing = !raspador.playing
+        document.getElementById('play-pause').innerHTML = raspador.playing ? '&#9612;&#9612;' : '&#9658;';
+      }
+      document.addEventListener("DOMContentLoaded", function(){
+        let imageElement = document.getElementById('image');
+        let sourceElement = document.getElementById('source');
+        let imageURL = imageElement.src;
+        let sourceURL = sourceElement.src;
+        setInterval(() => {
+          if (!raspador.playing) { return; }
+          let time = new Date().getTime();
+          imageElement.src = `${imageURL}?${time}`;
+          sourceElement.src = `${sourceURL}?${time}`;
+        }, 1000);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="control">
+      <a id="play-pause" href="javascript:void(0)" onclick="togglePlay()">&#9612;&#9612;</a>
+    </div>
+    <img id="image" src="output/image/monitor.png">
+    <iframe id="source" src="output/html/monitor.html" sandbox allowtransparency="false"></iframe>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+from .map_graph_scraper import MapGraphBot as Bot

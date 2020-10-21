@@ -1,0 +1,86 @@
+// Top level keys will be available in the IOMap context as `iocontext.{KEY}`
+{
+  // `start` is the default entry point, but can be overriden in the `configurations/map_graph_configuration/map_graph_configuration_default.json` file
+  "start": {
+    // The `iokeymap` key allows a key map to inherit from another key map while overriding select construct, input, output, and options values
+    "iokeymap": "iocontext.scrape",
+    "construct": {
+      "pause": 3
+    }
+  },
+  "scrape": {
+    // `MapGraphManeuver` runs a sequence of maneuvers or maps
+    "map": "iomap.raspador.map_maneuver/MapGraphManeuver",
+    "construct": {
+      // The `MapGraphManeuver.key_maps` construct parameter will recursively dereference strings and flatten nested lists when executed, to get a list of key maps
+      "key_maps": [
+        "iocontext.signin",
+        "iocontext.signout",
+        "iocontext.signin.0",
+        // key map definitions that are nested will be dereferenced twice (or as many times as they are nested), and their string values will require additional escaping with the `str.` prefix
+        {
+          "map": "str.iomap.raspador.maneuver/NavigationManeuver",
+          "construct": {
+            "url": "str.str.https://example.com/end"
+          }
+        }
+      ],
+      // The `MapGraphManeuver.pause` construct parameter specifies the delay after each key map is run
+      "pause": 1
+    }
+  },
+  // Top-level lists can be used as `MapGraphManeuver.key_maps` values, and individual items can be referenced as `iocontext.{KEY}.{INDEX}
+  "signin": [
+    {
+      "map": "iomap.raspador.maneuver/NavigationManeuver",
+      "construct": {
+        "url": "iocontext.pilot.base_url",
+      },
+    },
+    {
+      "map": "iomap.raspador.maneuver/ElementManeuver",
+      "construct": {
+        "seek": {
+          "name": "str.a"
+        },
+        "instruction": "str.Find the Go button"
+      },
+      // The `output` key pulls results out into the parent `MapGraphManeuver` 
+      "output": "run.output"
+    },
+    "iocontext.go"
+  ],
+  "go" : [
+    {
+      "map": "iomap.raspador.maneuver/ClickElementManeuver",
+      "construct": {
+        // The `run.` prefix is used to access values created by prior maneuvers the parent `MapGraphManeuver`'s run, and the special `run.output` key will be returned by the parent `MapGraphManeuver` to its parent
+        "element": "run.output",
+        "instruction": "str.Click the Go button"
+      }
+    },
+    {
+      // `BotManeuver` starts and runs another bot, in this case the same bot class with a different entry point
+      "map": "iomap.raspador.bot_maneuver/BotManeuver",
+      "input": {
+        "bot_name": "str.map_graph",
+        "configuration": {
+          "entry_key": "str.move"
+        }
+      }
+    }
+  ],
+  "move": {
+    "map": "iomap.raspador.maneuver/NavigationManeuver",
+    "construct": {
+      "url": "str.http://example.com"
+    }
+  },
+  "signout": {
+    "map": "iomap.raspador.maneuver/NavigationManeuver",
+    "construct": {
+      "url": "str.https://example.com"
+    }
+  },
+  // Trailing commas, as well as comments, are okay
+}

@@ -1,0 +1,15 @@
+beautifulsoup4
+requests
+selenium
+pandas
+sqlalchemy
+sphinx
+m2r
+pytest
+click
+bpython
+ipython
+Pygments
+slackclient
+jsoncomment
+pylint
